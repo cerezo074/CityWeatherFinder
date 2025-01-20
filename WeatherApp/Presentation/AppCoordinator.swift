@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 class AppCoordinator: ObservableObject {
+    
     enum AppState {
         case onStartup
         case home
