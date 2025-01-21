@@ -59,7 +59,7 @@ struct SearchBar: View {
 
 #Preview {
     SearchBar(
-        text: .constant("text"),
+        text: .constant(""),
         isLoading: false,
         placeholder: "Search Location"
     )
