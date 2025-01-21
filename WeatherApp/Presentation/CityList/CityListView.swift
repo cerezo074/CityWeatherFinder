@@ -16,7 +16,7 @@ struct CityListView: View {
             wrappedValue: .init(
                 searchText: "",
                 isSearching: false,
-                searchPlaceholder: "Search Location"
+                searchPlaceholder: Constants.searchPlaceholder
             )
         )
     }
@@ -24,7 +24,7 @@ struct CityListView: View {
     var body: some View {
         VStack {
             searchView
-            Spacer().ifLet(topContentSpace) { view, value in
+            Spacer().ifLet(topContentViewSpace) { view, value in
                 view.frame(height: value)
             }
             contentView
@@ -32,12 +32,12 @@ struct CityListView: View {
         }
     }
     
-    var topContentSpace: CGFloat? {
+    var topContentViewSpace: CGFloat? {
         switch viewModel.contentViewState {
         case .showSavedCity:
-            74
+            Constants.topContentSpaceSavedCity
         case .showSuggestedCity:
-            32
+            Constants.topContentSpaceSuggestedCity
         case .error, .noResults:
             nil
         }
@@ -50,8 +50,8 @@ struct CityListView: View {
             placeholder: viewModel.searchPlaceholder
         )
         .disabled(viewModel.isSavingCity)
-        .padding(.horizontal, 24)
-        .padding(.top, 44)
+        .padding(.horizontal, Constants.searchPaddingHorizontal)
+        .padding(.top, Constants.searchPaddingTop)
     }
     
     @ViewBuilder
@@ -59,15 +59,15 @@ struct CityListView: View {
         switch viewModel.contentViewState {
         case .noResults(let title, let suggestion):
             showMessage(with: title, description: suggestion)
-                .foregroundStyle(.darkGray)
+                .foregroundStyle(Constants.noResultsTextColor)
         case .error(let title, let message):
             showMessage(with: title, description: message)
-                .foregroundStyle(.red)
+                .foregroundStyle(Constants.errorTextColor)
         case .showSavedCity(let city):
             CityWeatherDetail(viewModel: city)
         case .showSuggestedCity(let city):
             CitySuggestion(viewModel: city)
-                .padding(.horizontal, 24)
+                .padding(.horizontal, Constants.suggestionPaddingHorizontal)
         }
     }
     
@@ -75,12 +75,31 @@ struct CityListView: View {
         with title: String,
         description: String
     ) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Constants.messageSpacing) {
             Text(title)
-                .customFont(.semiBold, size: 30)
+                .customFont(.semiBold, size: Constants.messageTitleFontSize)
             Text(description)
-                .customFont(.semiBold, size: 15)
+                .customFont(.semiBold, size: Constants.messageDescriptionFontSize)
         }
+    }
+    
+    // MARK: - Constants
+
+    private enum Constants {
+        static let searchPlaceholder = "Search Location"
+        static let searchPaddingHorizontal: CGFloat = 24
+        static let searchPaddingTop: CGFloat = 44
+        
+        static let topContentSpaceSavedCity: CGFloat = 74
+        static let topContentSpaceSuggestedCity: CGFloat = 32
+        
+        static let noResultsTextColor: Color = .darkGray
+        static let errorTextColor: Color = .red
+        static let suggestionPaddingHorizontal: CGFloat = 24
+        
+        static let messageSpacing: CGFloat = 8
+        static let messageTitleFontSize: CGFloat = 30
+        static let messageDescriptionFontSize: CGFloat = 15
     }
 }
 

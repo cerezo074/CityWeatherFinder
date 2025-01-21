@@ -102,6 +102,8 @@ struct CityWeatherDetail: View {
         }
     }
     
+    // MARK: - Constants
+
     private enum Constants {
         static let temperatureFontSize: CGFloat = 60
         static let temperatureTopPadding: CGFloat = 9

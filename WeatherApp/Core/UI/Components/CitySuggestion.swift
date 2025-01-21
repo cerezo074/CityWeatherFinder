@@ -56,6 +56,8 @@ struct CitySuggestion: View {
             .frame(width: Constants.iconWidth, height: Constants.iconHeight)
     }
     
+    // MARK: - Constants
+
     private enum Constants {
         static let horizontalPadding: CGFloat = 31
         static let cornerRadius: CGFloat = 16

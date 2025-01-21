@@ -47,6 +47,7 @@ struct SearchBar: View {
     }
     
     // MARK: - Constants
+    
     private enum Constants {
         static let verticalInputPadding: CGFloat = 12
         static let leadingInputPadding: CGFloat = 20
