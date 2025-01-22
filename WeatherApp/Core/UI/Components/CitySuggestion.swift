@@ -11,6 +11,10 @@ struct SuggestedCityViewModel {
     let cityName: String
     let temperature: String
     let imageName: String
+    
+    var fullImageURL: URL? {
+        return URL(string: "https:\(imageName)")
+    }
 }
 
 struct CitySuggestion: View {

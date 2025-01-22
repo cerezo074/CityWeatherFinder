@@ -21,13 +21,16 @@ actor CityRepository: CityRepositoryInteface {
     
     func getCity(by name: String) async throws -> CityEntity? {
         let endpoint = CityEndpointTypes.searchCity(query: name, apiKey: weatherAPIKey)
-        let remoteResource = try await networkProvider.fetchData(
+        
+        guard let remoteResource = try await networkProvider.fetchData(
             of: CityResource.self,
             with: endpoint
-        )
+        ) else {
+            return nil
+        }
         
-        print(remoteResource)
+        let cityEntity = CityEntity(from: remoteResource)
         
-        return nil
+        return cityEntity
     }
 }
