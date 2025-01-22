@@ -7,6 +7,7 @@
 
 protocol CityRepositoryInteface {
     func getCity(by name: String) async throws -> CityEntity?
+    func save(city: CityEntity) async throws
 }
 
 actor CityRepository: CityRepositoryInteface {
@@ -32,5 +33,9 @@ actor CityRepository: CityRepositoryInteface {
         let cityEntity = CityEntity(from: remoteResource)
         
         return cityEntity
+    }
+    
+    func save(city: CityEntity) async throws {
+        try await Task.sleep(for: .seconds(3))
     }
 }

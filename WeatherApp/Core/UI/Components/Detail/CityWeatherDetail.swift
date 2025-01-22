@@ -8,45 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct CitySummaryViewModel {
-    let cityName: String
-    let temperature: String
-    let humidityTitle: String = "Humidity"
-    let humidityValue: String
-    let UVTitle: String = "UV"
-    let UVValue: String
-    let feelsLikeTitle: String = "Feels like"
-    let feelsLikeValue: String
-    let iconURL: URL?
-    
-    init(
-        iconURL: URL?,
-        cityName: String,
-        temperature: String,
-        humidityValue: String,
-        UVValue: String,
-        feelsLikeValue: String
-    ) {
-        self.iconURL = iconURL
-        self.cityName = cityName
-        self.temperature = temperature
-        self.humidityValue = humidityValue
-        self.UVValue = UVValue
-        self.feelsLikeValue = feelsLikeValue
-    }
-    
-    init(from city: CityEntity) {
-        cityName = city.name
-        temperature = String(city.temperature)
-        humidityValue = String(city.humidityValue)
-        iconURL = city.iconURL
-        UVValue = String(city.UVValue)
-        feelsLikeValue = String(city.feelsLikeValue)
-    }
-}
 
 struct CityWeatherDetail: View {
-    let viewModel: CitySummaryViewModel
+    @ObservedObject var viewModel: CitySummaryViewModel
     
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
@@ -54,11 +18,15 @@ struct CityWeatherDetail: View {
             cityContainer
             temperatureContainer
             temperatureDetailContainer
+            saveContainer
+        }
+        .task {
+            await viewModel.viewDidLoad()
         }
     }
     
     private var weatherIcon: some View {
-//        Image(systemName: viewModel.iconURL)
+        //        Image(systemName: viewModel.iconURL)
         Image(systemName: "sun.max.fill")
             .resizable()
             .aspectRatio(contentMode: .fill)
@@ -112,6 +80,34 @@ struct CityWeatherDetail: View {
         .background {
             RoundedRectangle(cornerRadius: Constants.detailContainerCornerRadius).fill(.whiteSmoke)
         }
+        .padding(.bottom, 20)
+    }
+    
+    
+    @ViewBuilder
+    private var saveContainer: some View {
+        switch viewModel.saveState {
+        case .saving(let message):
+            HStack(alignment: .center, spacing: .zero) {
+                Text(message)
+                    .customFont(.regular, size: 15)
+                    .foregroundStyle(.darkGray)
+                    .padding(.trailing, 8)
+                ProgressView()
+            }
+        case .saved: EmptyView()
+        case .error(let message):
+            HStack(alignment: .center, spacing: .zero) {
+                Text(message)
+                    .customFont(.regular, size: 15)
+                    .foregroundStyle(.darkGray)
+                    .padding(.trailing, 8)
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.red)
+                    .padding(.leading, 4)
+            }
+        }
+        
     }
     
     private func makeTemperatureDetail(
@@ -131,7 +127,7 @@ struct CityWeatherDetail: View {
     }
     
     // MARK: - Constants
-
+    
     private enum Constants {
         static let temperatureFontSize: CGFloat = 60
         static let temperatureTopPadding: CGFloat = 9
@@ -167,7 +163,8 @@ struct CityWeatherDetail: View {
             temperature: "45",
             humidityValue: "20%",
             UVValue: "4",
-            feelsLikeValue: "38°"
+            feelsLikeValue: "38°",
+            saveState: .saved
         )
     )
 }

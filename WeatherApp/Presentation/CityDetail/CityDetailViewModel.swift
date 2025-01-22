@@ -23,6 +23,7 @@ class CityDetailViewModel: ObservableObject {
     @Published
     private(set) var isSavingCity: Bool = false
     private var foundCity: CityEntity?
+    private var summaryViewModel: CitySummaryViewModel?
     private var subscriptions = Set<AnyCancellable>()
     private let noResultsTitle: String = "No City Selected"
     private let noResultsSuggestion: String = "Please Search For A City"
@@ -56,7 +57,15 @@ class CityDetailViewModel: ObservableObject {
     
     func didTapSuggestedCity() async {
         guard let suggestedCity = foundCity else { return }
-        await setState(.showSavedCity(.init(from: suggestedCity)))
+        let summaryViewModel: CitySummaryViewModel = .init(from: suggestedCity)
+        
+        summaryViewModel.saveCompletion = { [weak self] in
+            guard let self else { return }
+            try await cityFinder.save(city: suggestedCity)
+        }
+        
+        await setState(.showSavedCity(summaryViewModel))
+        self.summaryViewModel = summaryViewModel
     }
     
     private func onSearchData(with cityName: String) async {

@@ -7,6 +7,7 @@
 
 protocol CityDataInterface {
     func searchCity(by name: String) async throws -> CityEntity?
+    func save(city: CityEntity) async throws
 }
 
 class CityDataController: CityDataInterface {
@@ -29,9 +30,16 @@ class CityDataController: CityDataInterface {
         try await repository.getCity(by: name)
     }
     
+    func save(city: CityEntity) async throws {
+        try await repository.save(city: city)
+    }
+    
 }
 
 class EmptyCityDataController: CityDataInterface {
+    func save(city: CityEntity) async throws {
+        
+    }
     
     func searchCity(by name: String) async throws -> CityEntity? {
         nil

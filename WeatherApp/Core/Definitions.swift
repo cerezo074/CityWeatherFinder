@@ -6,4 +6,5 @@
 //
 
 typealias VoidClousure = () -> Void
+typealias ThorwableAsyncVoidClousure = () async throws -> Void
 typealias AsyncQueryClousure = (_ query: String) async -> Void
