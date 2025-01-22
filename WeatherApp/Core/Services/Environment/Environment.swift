@@ -5,6 +5,8 @@
 //  Created by Eli Pacheco Hoyos on 21/01/25.
 //
 
+import Foundation
+
 enum Environment {
     case production
     case staging
@@ -13,7 +15,7 @@ enum Environment {
     var weatherApiKey: String {
         switch self {
         case .production, .staging:
-            return ""
+            return ProcessInfo.processInfo.environment["WEATHER_API_KEY"] ?? ""
         }
     }
 }

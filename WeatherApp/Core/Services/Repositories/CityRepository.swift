@@ -18,7 +18,6 @@ actor CityRepository: CityRepositoryInteface {
     private let weatherAPIKey: String
     private let database: any CityDataBaseInterface
     private var lastSavedCity: CityEntity?
-    private var didLoadContent: Bool = false
     
     init(
         networkProvider: NetworkServices,
@@ -51,7 +50,6 @@ actor CityRepository: CityRepositoryInteface {
     
     func loadContent() async throws {
         lastSavedCity = try database.read(sortBy: []).first
-        didLoadContent = true
     }
     
     func getLastSavedCity() async -> CityEntity? {

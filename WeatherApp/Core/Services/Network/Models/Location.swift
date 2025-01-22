@@ -15,4 +15,24 @@ struct Location: Decodable {
     let tz_id: String
     let localtime_epoch: Int
     let localtime: String
+    
+    init(
+        name: String = "",
+        region: String = "",
+        country: String = "",
+        lat: Double = 0.0,
+        lon: Double = 0.0,
+        tz_id: String = "",
+        localtime_epoch: Int = 0,
+        localtime: String = ""
+    ) {
+        self.name = name
+        self.region = region
+        self.country = country
+        self.lat = lat
+        self.lon = lon
+        self.tz_id = tz_id
+        self.localtime_epoch = localtime_epoch
+        self.localtime = localtime
+    }
 }

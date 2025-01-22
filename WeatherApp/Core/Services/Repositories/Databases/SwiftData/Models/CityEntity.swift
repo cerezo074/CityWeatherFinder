@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class CityEntity {
+final class CityEntity: Hashable {
     /**
      WARNING
      
@@ -55,5 +55,25 @@ final class CityEntity {
         UVValue = city.current.uv
         humidityValue = city.current.humidity
         feelsLikeValue = city.current.feelslike_c
+    }
+    
+    static func == (lhs: CityEntity, rhs: CityEntity) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.name == rhs.name &&
+        lhs.temperature == rhs.temperature &&
+        lhs.humidityValue == rhs.humidityValue &&
+        lhs.UVValue == rhs.UVValue &&
+        lhs.feelsLikeValue == rhs.feelsLikeValue &&
+        lhs.imageURLPath == rhs.imageURLPath
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(name)
+        hasher.combine(temperature)
+        hasher.combine(humidityValue)
+        hasher.combine(UVValue)
+        hasher.combine(feelsLikeValue)
+        hasher.combine(imageURLPath)
     }
 }
