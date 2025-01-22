@@ -31,7 +31,7 @@ class AppCoordinator: ObservableObject {
     func makeView() -> some View {
         switch appState {
         case .onStartup:
-            SplashScreenView { [weak self] in
+            SplashScreenView(cityFinder: cityFinder) { [weak self] in
                 self?.finishedStartup()
             }
         case .home:

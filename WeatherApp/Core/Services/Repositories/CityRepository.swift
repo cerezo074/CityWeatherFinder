@@ -6,15 +6,19 @@
 //
 
 protocol CityRepositoryInteface {
+    func getLastSavedCity() async -> CityEntity?
     func getCity(by name: String) async throws -> CityEntity?
     func save(city: CityEntity) async throws
+    func loadContent() async throws
 }
 
 actor CityRepository: CityRepositoryInteface {
     
-    private var networkProvider: NetworkServices
+    private let networkProvider: NetworkServices
     private let weatherAPIKey: String
     private let database: any CityDataBaseInterface
+    private var lastSavedCity: CityEntity?
+    private var didLoadContent: Bool = false
     
     init(
         networkProvider: NetworkServices,
@@ -43,5 +47,14 @@ actor CityRepository: CityRepositoryInteface {
     
     func save(city: CityEntity) async throws {
         try database.create(city)
+    }
+    
+    func loadContent() async throws {
+        lastSavedCity = try database.read(sortBy: []).first
+        didLoadContent = true
+    }
+    
+    func getLastSavedCity() async -> CityEntity? {
+        return lastSavedCity
     }
 }

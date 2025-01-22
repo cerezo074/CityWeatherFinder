@@ -18,15 +18,18 @@ class SplashScreenViewModel: ObservableObject {
     @MainActor
     private(set) var state: ViewState = .loading
     private let didFinishLoading: VoidClousure
+    private let cityFinder: CityDataInterface
     
-    init(didFinishLoading: @escaping VoidClousure) {
+    init(
+        cityFinder: CityDataInterface,
+        didFinishLoading: @escaping VoidClousure
+    ) {
+        self.cityFinder = cityFinder
         self.didFinishLoading = didFinishLoading
     }
     
     func viewDidLoad() async {
-        
-        // TODO: Call use case for loading data from disk
-        try? await Task.sleep(for: .seconds(3))
+        await cityFinder.loadContent()
         
         await MainActor.run { [weak self] in
             self?.state = .loaded

@@ -8,6 +8,8 @@
 protocol CityDataInterface {
     func searchCity(by name: String) async throws -> CityEntity?
     func save(city: CityEntity) async throws
+    func loadContent() async
+    func getLastCitySearched() async -> CityEntity?
 }
 
 class CityDataController: CityDataInterface {
@@ -35,6 +37,18 @@ class CityDataController: CityDataInterface {
         try await repository.save(city: city)
     }
     
+    func loadContent() async {
+        do {
+            try await repository.loadContent()
+        } catch {
+            print("Error loading content from repository: \(error)")
+        }
+    }
+    
+    func getLastCitySearched() async -> CityEntity? {
+        await repository.getLastSavedCity()
+    }
+    
 }
 
 class EmptyCityDataController: CityDataInterface {
@@ -46,4 +60,11 @@ class EmptyCityDataController: CityDataInterface {
         nil
     }
     
+    func loadContent() async {
+        
+    }
+    
+    func getLastCitySearched() async -> CityEntity? {
+        return nil
+    }
 }

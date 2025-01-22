@@ -9,13 +9,14 @@ import Foundation
 
 class CitySummaryViewModel: ObservableObject {
     
-    enum SavingState {
+    enum SavingState: Equatable {
         case saving(message: String)
         case saved
         case error(message: String)
     }
     
-    @Published var saveState: SavingState
+    @Published
+    private(set)var saveState: SavingState
     
     let cityName: String
     let temperature: String
@@ -47,14 +48,17 @@ class CitySummaryViewModel: ObservableObject {
         self.saveState = saveState
     }
     
-    init(from city: CityEntity) {
+    init(
+        from city: CityEntity,
+        saveState: SavingState? = nil
+    ) {
         cityName = city.name
         temperature = String(city.temperature)
         humidityValue = String(city.humidityValue)
         iconURL = city.iconURL
         UVValue = String(city.UVValue)
         feelsLikeValue = String(city.feelsLikeValue)
-        saveState = .saving(message: "Saving...")
+        self.saveState = saveState ?? .saving(message: "Saving...")
     }
     
     func viewDidLoad() async {

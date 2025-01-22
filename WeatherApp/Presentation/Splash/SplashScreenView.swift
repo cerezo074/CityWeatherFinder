@@ -11,9 +11,15 @@ struct SplashScreenView: View {
     
     @StateObject private var viewModel: SplashScreenViewModel
     
-    init(didFinishLoading: @escaping VoidClousure) {
+    init(
+        cityFinder: CityDataInterface,
+        didFinishLoading: @escaping VoidClousure
+    ) {
         self._viewModel = .init(
-            wrappedValue: .init(didFinishLoading: didFinishLoading)
+            wrappedValue: .init(
+                cityFinder: cityFinder,
+                didFinishLoading: didFinishLoading
+            )
         )
     }
     
@@ -51,5 +57,5 @@ struct SplashScreenView: View {
 }
 
 #Preview {
-    SplashScreenView(didFinishLoading: {})
+    SplashScreenView(cityFinder: EmptyCityDataController(), didFinishLoading: {})
 }

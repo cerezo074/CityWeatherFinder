@@ -53,19 +53,12 @@ class CityDetailViewModel: ObservableObject {
     
     func viewDidLoad() async {
         await searchViewModel.viewDidLoad()
+        await loadLastSavedCityIfNeeded()
     }
     
     func didTapSuggestedCity() async {
         guard let suggestedCity = foundCity else { return }
-        let summaryViewModel: CitySummaryViewModel = .init(from: suggestedCity)
-        
-        summaryViewModel.saveCompletion = { [weak self] in
-            guard let self else { return }
-            try await cityFinder.save(city: suggestedCity)
-        }
-        
-        await setState(.showSavedCity(summaryViewModel))
-        self.summaryViewModel = summaryViewModel
+        await showSavedCity(with: suggestedCity, saveState: nil)
     }
     
     private func onSearchData(with cityName: String) async {
@@ -97,6 +90,32 @@ class CityDetailViewModel: ObservableObject {
         ))
         
         self.foundCity = foundCity
+    }
+    
+    private func loadLastSavedCityIfNeeded() async {
+        guard let savedCity = await cityFinder.getLastCitySearched() else {
+            return
+        }
+        
+        self.foundCity = savedCity
+        await showSavedCity(with: savedCity, saveState: .saved)
+    }
+    
+    private func showSavedCity(
+        with suggestedCity: CityEntity,
+        saveState: CitySummaryViewModel.SavingState?
+    ) async {
+        let summaryViewModel: CitySummaryViewModel = .init(from: suggestedCity, saveState: saveState)
+        
+        if saveState != .saved {
+            summaryViewModel.saveCompletion = { [weak self] in
+                guard let self else { return }
+                try await cityFinder.save(city: suggestedCity)
+            }
+        }
+        
+        await setState(.showSavedCity(summaryViewModel))
+        self.summaryViewModel = summaryViewModel
     }
     
     private func setState(_ newState: ContentViewState) async {
