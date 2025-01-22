@@ -12,32 +12,39 @@ struct SearchBar: View {
 
     var body: some View {
         HStack {
-            TextField(viewModel.placeholder, text: $viewModel.text)
-                .foregroundStyle(.darkGray)
-                .textFieldStyle(PlainTextFieldStyle())
-                .customFont(.regular, size: Constants.fontSize)
-                .padding(.leading, Constants.leadingInputPadding)
-                .padding(.vertical, Constants.verticalInputPadding)
-                .disabled(viewModel.disableSearch)
-
-            if viewModel.showClearButton {
-                Button(action: {
-                    viewModel.text = ""
-                }) {
-                    Image(systemName: Constants.clearButtonImage)
-                        .foregroundColor(.gray)
-                }
+            input
+            rightIcon
                 .padding(.trailing, Constants.trailingRightComponent)
-            } else if viewModel.isLoading {
-                ProgressView()
-                    .padding(.trailing, Constants.trailingRightComponent)
-            } else {
-                Image(.search)
-                    .padding(.trailing, Constants.trailingRightComponent)
-            }
         }
         .background(.whiteSmoke)
         .cornerRadius(Constants.cornerRadius)
+    }
+    
+    private var input: some View {
+        TextField(viewModel.placeholder, text: $viewModel.text)
+            .foregroundStyle(.darkGray)
+            .textFieldStyle(PlainTextFieldStyle())
+            .customFont(.regular, size: Constants.fontSize)
+            .padding(.leading, Constants.leadingInputPadding)
+            .padding(.vertical, Constants.verticalInputPadding)
+            .disabled(viewModel.disableSearch)
+    }
+    
+    @ViewBuilder
+    private var rightIcon: some View {
+        switch viewModel.viewState {
+        case .waitingForInteraction where !viewModel.allowClearText:
+            Image(.search)
+        case .waitingForInteraction where viewModel.allowClearText:
+            Button(action: {
+                viewModel.text = ""
+            }) {
+                Image(systemName: Constants.clearButtonImage)
+                    .foregroundColor(.gray)
+            }
+        default:
+            ProgressView()
+        }
     }
     
     // MARK: - Constants

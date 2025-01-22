@@ -9,19 +9,28 @@ import Foundation
 import Combine
 
 class SearchViewModel: ObservableObject {
+    
+    enum ViewState {
+        case waitingForInteraction
+        case readyToSearch
+        case searching
+    }
+    
     @Published
     var text: String = ""
     @Published
-    private(set) var isLoading: Bool = false
-    @Published
-    private(set) var disableSearch: Bool = false
+    private(set) var viewState: ViewState
     
     private var subscriptions = Set<AnyCancellable>()
     var searchCompletion: AsyncQueryClousure?
     let placeholder: String
 
-    var showClearButton: Bool {
-        !text.isEmpty && !isLoading && !disableSearch
+    var allowClearText: Bool {
+        !text.isEmpty
+    }
+    
+    var disableSearch: Bool {
+        viewState == .searching
     }
 
     init(
@@ -31,7 +40,7 @@ class SearchViewModel: ObservableObject {
         searchCompletion: AsyncQueryClousure? = nil
     ) {
         self.text = text
-        self.isLoading = isLoading
+        self.viewState = .waitingForInteraction
         self.placeholder = placeholder
         self.searchCompletion = searchCompletion
     }
@@ -40,10 +49,8 @@ class SearchViewModel: ObservableObject {
         $text
             .dropFirst()
             .removeDuplicates()
-            .handleEvents(receiveOutput: {  value in
-                Task { [weak self] in
-                    await self?.showSearchAnimation(!value.isEmpty)
-                }
+            .handleEvents(receiveOutput: { [weak self] value in
+                self?.prepareToSearch(with: value)
             })
             .debounce(for: .seconds(3), scheduler: DispatchQueue.global())
             .sink { [weak self] text in
@@ -54,24 +61,25 @@ class SearchViewModel: ObservableObject {
     
     private func onSearchData(with cityName: String) {
         Task {
-            await showSearchAnimation(!cityName.isEmpty)
-            guard !cityName.isEmpty else { return }
-            await enableSearch(false)
+            guard !cityName.isEmpty else {
+                await setState(.waitingForInteraction)
+                return
+            }
+            await setState(.searching)
             await searchCompletion?(cityName)
-            await showSearchAnimation(false)
-            await enableSearch(true)
+            await setState(.waitingForInteraction)
         }
     }
     
-    private func showSearchAnimation(_ show: Bool) async {
-        await MainActor.run {
-            isLoading = show
+    private func prepareToSearch(with text: String) {
+        Task {
+            await setState(text.isEmpty ? .waitingForInteraction : .readyToSearch)
         }
     }
     
-    private func enableSearch(_ enabled: Bool) async {
+    private func setState(_ newState: ViewState) async {
         await MainActor.run {
-            disableSearch = !enabled
+            viewState = newState
         }
     }
 }
