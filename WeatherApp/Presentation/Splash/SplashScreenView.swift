@@ -12,7 +12,9 @@ struct SplashScreenView: View {
     @StateObject private var viewModel: SplashScreenViewModel
     
     init(didFinishLoading: @escaping VoidClousure) {
-        self._viewModel = .init(wrappedValue: .init(didFinishLoading: didFinishLoading))
+        self._viewModel = .init(
+            wrappedValue: .init(didFinishLoading: didFinishLoading)
+        )
     }
     
     var body: some View {
@@ -21,11 +23,13 @@ struct SplashScreenView: View {
             VStack {
                 logo.padding(.bottom, 20)
                 Text("Data has loaded!!!")
+                    .customFont(.regular, size: 20)
             }
         case .loading:
             VStack {
                 logo.padding(.bottom, 20)
                 ProgressView("Loading data...")
+                    .customFont(.regular, size: 20)
             }.task {
                 await viewModel.viewDidLoad()
             }
@@ -35,8 +39,9 @@ struct SplashScreenView: View {
     private var logo: some View {
         VStack {
             Text("The Weather App")
-                .font(.title)
-                .padding(.bottom, 10)
+                .customFont(.bold, size: 50)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 20)
             Image(systemName: "cloud.sun.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fill)

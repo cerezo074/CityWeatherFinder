@@ -19,10 +19,12 @@ class AppCoordinator: ObservableObject {
     var baseNavigationPath: NavigationPath
     @Published
     private(set) var appState: AppState
+    private let cityFinder: CityDataInterface
     
-    init() {
+    init(cityFinder: CityDataInterface? = nil) {
         self.baseNavigationPath = .init()
         self.appState = .onStartup
+        self.cityFinder = cityFinder ?? CityDataController()
     }
     
     @ViewBuilder
@@ -33,7 +35,7 @@ class AppCoordinator: ObservableObject {
                 self?.finishedStartup()
             }
         case .home:
-            CityListView()
+            CityDetailView(cityFinder: cityFinder)
         }
     }
     

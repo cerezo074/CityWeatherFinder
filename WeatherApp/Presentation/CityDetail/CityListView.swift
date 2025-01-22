@@ -1,5 +1,5 @@
 //
-//  CityListView.swift
+//  CityDetailView.swift
 //  WeatherApp
 //
 //  Created by Eli Pacheco Hoyos on 20/01/25.
@@ -7,16 +7,17 @@
 
 import SwiftUI
 
-struct CityListView: View {
+struct CityDetailView: View {
     
-    @StateObject private var viewModel: CityListViewModel
+    @StateObject private var viewModel: CityDetailViewModel
     
-    init() {
+    init(cityFinder: CityDataInterface) {
         self._viewModel = .init(
             wrappedValue: .init(
                 searchText: "",
                 isSearching: false,
-                searchPlaceholder: Constants.searchPlaceholder
+                searchPlaceholder: Constants.searchPlaceholder,
+                cityFinder: cityFinder
             )
         )
     }
@@ -29,6 +30,10 @@ struct CityListView: View {
             }
             contentView
             Spacer()
+        }
+        .padding(.horizontal, Constants.horizontalContentPadding)
+        .task {
+            await viewModel.viewDidLoad()
         }
     }
     
@@ -47,10 +52,9 @@ struct CityListView: View {
         SearchBar(
             text: $viewModel.searchText,
             isLoading: viewModel.isSearching,
+            disabled: viewModel.isSavingCity || viewModel.disableSearch,
             placeholder: viewModel.searchPlaceholder
         )
-        .disabled(viewModel.isSavingCity)
-        .padding(.horizontal, Constants.searchPaddingHorizontal)
         .padding(.top, Constants.searchPaddingTop)
     }
     
@@ -67,7 +71,6 @@ struct CityListView: View {
             CityWeatherDetail(viewModel: city)
         case .showSuggestedCity(let city):
             CitySuggestion(viewModel: city)
-                .padding(.horizontal, Constants.suggestionPaddingHorizontal)
         }
     }
     
@@ -86,8 +89,8 @@ struct CityListView: View {
     // MARK: - Constants
 
     private enum Constants {
+        static let horizontalContentPadding: CGFloat = 24
         static let searchPlaceholder = "Search Location"
-        static let searchPaddingHorizontal: CGFloat = 24
         static let searchPaddingTop: CGFloat = 44
         
         static let topContentSpaceSavedCity: CGFloat = 74
@@ -95,7 +98,6 @@ struct CityListView: View {
         
         static let noResultsTextColor: Color = .darkGray
         static let errorTextColor: Color = .red
-        static let suggestionPaddingHorizontal: CGFloat = 24
         
         static let messageSpacing: CGFloat = 8
         static let messageTitleFontSize: CGFloat = 30
@@ -104,5 +106,5 @@ struct CityListView: View {
 }
 
 #Preview {
-    CityListView()
+    CityDetailView(cityFinder: EmptyCityDataController())
 }

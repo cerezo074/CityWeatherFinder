@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchBar: View {
     @Binding var text: String
     let isLoading: Bool
+    let disabled: Bool
     let placeholder: String
 
     var body: some View {
@@ -20,7 +21,7 @@ struct SearchBar: View {
                 .customFont(.regular, size: Constants.fontSize)
                 .padding(.leading, Constants.leadingInputPadding)
                 .padding(.vertical, Constants.verticalInputPadding)
-                .disabled(isLoading)
+                .disabled(disabled)
 
             if showClearButton {
                 Button(action: {
@@ -43,7 +44,7 @@ struct SearchBar: View {
     }
     
     private var showClearButton: Bool {
-        !text.isEmpty && !isLoading
+        !text.isEmpty && !isLoading && !disabled
     }
     
     // MARK: - Constants
@@ -62,6 +63,7 @@ struct SearchBar: View {
     SearchBar(
         text: .constant(""),
         isLoading: false,
+        disabled: false,
         placeholder: "Search Location"
     )
 }

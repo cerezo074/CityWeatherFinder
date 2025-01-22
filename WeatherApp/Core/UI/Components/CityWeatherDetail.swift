@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct CityDetailViewModel {
+struct CitySummaryViewModel {
     let imageName: String
     let cityName: String
     let temperature: String
@@ -21,7 +21,7 @@ struct CityDetailViewModel {
 }
 
 struct CityWeatherDetail: View {
-    let viewModel: CityDetailViewModel
+    let viewModel: CitySummaryViewModel
     
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
