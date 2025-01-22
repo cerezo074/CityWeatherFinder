@@ -28,6 +28,7 @@ final class CityEntity {
     private(set) var imageURLPath: String
     
     var iconURL: URL? {
+        // FIXME: Server returns tiny images.
         return URL(string: "https:\(imageURLPath)")
     }
     

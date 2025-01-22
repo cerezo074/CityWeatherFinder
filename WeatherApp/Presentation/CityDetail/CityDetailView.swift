@@ -11,13 +11,13 @@ struct CityDetailView: View {
     
     @StateObject private var viewModel: CityDetailViewModel
     
-    init(cityFinder: CityDataInterface) {
+    init(cityDataController: CityDataInterface) {
         self._viewModel = .init(
             wrappedValue: .init(
                 searchText: "",
                 isSearching: false,
                 searchPlaceholder: Constants.searchPlaceholder,
-                cityFinder: cityFinder
+                cityDataController: cityDataController
             )
         )
     }
@@ -107,5 +107,5 @@ struct CityDetailView: View {
 }
 
 #Preview {
-    CityDetailView(cityFinder: EmptyCityDataController())
+    CityDetailView(cityDataController: EmptyCityDataController())
 }

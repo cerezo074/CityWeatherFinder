@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SuggestedCityViewModel {
     let cityName: String
@@ -51,13 +52,27 @@ struct CitySuggestion: View {
         }
     }
     
+    @ViewBuilder
     private var weatherIcon: some View {
-        // TODO: use iconURL and load the image
-//        Image(systemName: viewModel.iconURL)
-        Image(systemName: "sun.max.fill")
+        if let iconURL = viewModel.iconURL {
+            KFImage(iconURL)
+                .placeholder {
+                    weatherPlaceholder
+                }
+                .resizable()
+                .scaledToFill()
+                .frame(width: Constants.iconWidth, height: Constants.iconWidth)
+        } else {
+            weatherPlaceholder
+        }
+    }
+    
+    private var weatherPlaceholder: some View {
+        Image(systemName: Constants.iconPlaceholderName)
             .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: Constants.iconWidth, height: Constants.iconHeight)
+            .aspectRatio(contentMode: .fill)
+            .frame(width: Constants.iconWidth, height: Constants.iconWidth)
+            .foregroundStyle(.yellow)
     }
     
     // MARK: - Constants
@@ -73,6 +88,7 @@ struct CitySuggestion: View {
         static let dotSize: CGFloat = 5
         static let dotTopPadding: CGFloat = 20
         static let dotLeadingPadding: CGFloat = 8
+        static let iconPlaceholderName: String = "sun.max.fill"
     }
 }
 

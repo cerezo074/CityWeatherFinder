@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import Kingfisher
 
 struct CityWeatherDetail: View {
     @ObservedObject var viewModel: CitySummaryViewModel
@@ -25,12 +25,27 @@ struct CityWeatherDetail: View {
         }
     }
     
+    @ViewBuilder
     private var weatherIcon: some View {
-        //        Image(systemName: viewModel.iconURL)
-        Image(systemName: "sun.max.fill")
+        if let iconURL = viewModel.iconURL {
+            KFImage(iconURL)
+                .placeholder {
+                    weatherPlaceholder
+                }
+                .resizable()
+                .scaledToFill()
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
+        } else {
+            weatherPlaceholder
+        }
+    }
+    
+    private var weatherPlaceholder: some View {
+        Image(systemName: Constants.iconPlaceholderName)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .foregroundStyle(.yellow)
             .padding(.bottom, Constants.weatherIconBottomPadding)
     }
     
@@ -152,6 +167,8 @@ struct CityWeatherDetail: View {
         static let tinyTitleFontSize: CGFloat = 8
         static let detailTitleBottomSpacing: CGFloat = 4
         static let detailValueFontSize: CGFloat = 15
+        
+        static let iconPlaceholderName: String = "sun.max.fill"
     }
 }
 

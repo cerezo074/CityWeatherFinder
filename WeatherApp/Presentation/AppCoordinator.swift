@@ -19,23 +19,23 @@ class AppCoordinator: ObservableObject {
     var baseNavigationPath: NavigationPath
     @Published
     private(set) var appState: AppState
-    private let cityFinder: CityDataInterface
+    private let cityDataController: CityDataInterface
     
     init(cityFinder: CityDataInterface? = nil) {
         self.baseNavigationPath = .init()
         self.appState = .onStartup
-        self.cityFinder = cityFinder ?? CityDataController()
+        self.cityDataController = cityFinder ?? CityDataController()
     }
     
     @ViewBuilder
     func makeView() -> some View {
         switch appState {
         case .onStartup:
-            SplashScreenView(cityFinder: cityFinder) { [weak self] in
+            SplashScreenView(cityDataController: cityDataController) { [weak self] in
                 self?.finishedStartup()
             }
         case .home:
-            CityDetailView(cityFinder: cityFinder)
+            CityDetailView(cityDataController: cityDataController)
         }
     }
     

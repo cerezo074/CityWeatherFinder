@@ -28,17 +28,17 @@ class CityDetailViewModel: ObservableObject {
     private let noResultsTitle: String = "No City Selected"
     private let noResultsSuggestion: String = "Please Search For A City"
     private let errorTitle: String = "Error"
-    private let cityFinder: CityDataInterface
+    private let cityDataController: CityDataInterface
     let searchViewModel: SearchViewModel
     
     init(
         searchText: String,
         isSearching: Bool,
         searchPlaceholder: String,
-        cityFinder: CityDataInterface
+        cityDataController: CityDataInterface
     ) {
         self.contentViewState = .noResults(title: noResultsTitle, suggestion: noResultsSuggestion)
-        self.cityFinder = cityFinder
+        self.cityDataController = cityDataController
         self.searchViewModel = .init(
             text: searchText,
             isLoading: isSearching,
@@ -63,7 +63,7 @@ class CityDetailViewModel: ObservableObject {
     
     private func onSearchData(with cityName: String) async {
         do {
-            if let foundCity = try await cityFinder.searchCity(by: cityName) {
+            if let foundCity = try await cityDataController.searchCity(by: cityName) {
                 await handleSuggestedCity(with: foundCity)
             } else {
                 await setState(
@@ -93,7 +93,7 @@ class CityDetailViewModel: ObservableObject {
     }
     
     private func loadLastSavedCityIfNeeded() async {
-        guard let savedCity = await cityFinder.getLastCitySearched() else {
+        guard let savedCity = await cityDataController.getLastCitySearched() else {
             return
         }
         
@@ -110,7 +110,7 @@ class CityDetailViewModel: ObservableObject {
         if saveState != .saved {
             summaryViewModel.saveCompletion = { [weak self] in
                 guard let self else { return }
-                try await cityFinder.save(city: suggestedCity)
+                try await cityDataController.save(city: suggestedCity)
             }
         }
         
