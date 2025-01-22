@@ -6,14 +6,26 @@
 //
 
 import Foundation
+import SwiftData
 
-struct CityEntity {
-    let name: String
-    let temperature: Double
-    let humidityValue: Int
-    let UVValue: Double
-    let feelsLikeValue: Double
-    private let imageURLPath: String
+@Model
+final class CityEntity {
+    /**
+     WARNING
+     
+     Use a dynamic id property, unique identifier (such as a UUID or city name) to support
+     storing multiple cities currently, the implementation allows only a single entity to be,
+     inserted which is later updated (upserted) as long as the ID remains unchanged.
+     **/
+     
+    @Attribute(.unique)
+    private(set) var id: String = "1"
+    private(set) var name: String
+    private(set) var temperature: Double
+    private(set) var humidityValue: Int
+    private(set) var UVValue: Double
+    private(set) var feelsLikeValue: Double
+    private(set) var imageURLPath: String
     
     var iconURL: URL? {
         return URL(string: "https:\(imageURLPath)")

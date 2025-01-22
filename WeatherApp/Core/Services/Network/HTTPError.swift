@@ -1,8 +1,8 @@
 //
 //  HTTPError.swift
-//  PlaceFinder
+//  WeatherApp
 //
-//  Created by Eli Pacheco Hoyos on 31/12/24.
+//  Created by Eli Pacheco Hoyos on 22/01/25.
 //
 
 import Foundation

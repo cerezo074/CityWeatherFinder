@@ -14,10 +14,16 @@ actor CityRepository: CityRepositoryInteface {
     
     private var networkProvider: NetworkServices
     private let weatherAPIKey: String
+    private let database: any CityDataBaseInterface
     
-    init(networkProvider: NetworkServices, weatherAPIKey: String) {
+    init(
+        networkProvider: NetworkServices,
+        weatherAPIKey: String,
+        database: any CityDataBaseInterface
+    ) {
         self.networkProvider = networkProvider
         self.weatherAPIKey = weatherAPIKey
+        self.database = database
     }
     
     func getCity(by name: String) async throws -> CityEntity? {
@@ -36,6 +42,6 @@ actor CityRepository: CityRepositoryInteface {
     }
     
     func save(city: CityEntity) async throws {
-        try await Task.sleep(for: .seconds(3))
+        try database.create(city)
     }
 }

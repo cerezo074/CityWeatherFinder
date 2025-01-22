@@ -22,7 +22,8 @@ class CityDataController: CityDataInterface {
         self.savedCityEntity = savedCityEntity
         self.repository = repository ?? CityRepository(
             networkProvider: NetworkController(),
-            weatherAPIKey: Environment.staging.weatherApiKey
+            weatherAPIKey: Environment.staging.weatherApiKey,
+            database: (try? CityDB()) ?? EmptyCityDB()
         )
     }
     
