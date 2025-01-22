@@ -17,16 +17,9 @@ class CityDetailViewModel: ObservableObject {
         case error(title: String, description: String)
     }
     
-    let searchPlaceholder: String
-    
     @Published
     private(set) var contentViewState: ContentViewState
-    @Published
-    var searchText: String = ""
-    @Published
-    private(set) var isSearching: Bool = false
-    @Published
-    private(set) var disableSearch: Bool = false
+   
     @Published
     private(set) var isSavingCity: Bool = false
     private var subscriptions = Set<AnyCancellable>()
@@ -34,6 +27,7 @@ class CityDetailViewModel: ObservableObject {
     private let noResultsSuggestion: String = "Please Search For A City"
     private let errorTitle: String = "Error"
     private let cityFinder: CityDataInterface
+    let searchViewModel: SearchViewModel
     
     init(
         searchText: String,
@@ -41,64 +35,35 @@ class CityDetailViewModel: ObservableObject {
         searchPlaceholder: String,
         cityFinder: CityDataInterface
     ) {
-        self.searchText = searchText
-        self.isSearching = isSearching
-        self.searchPlaceholder = searchPlaceholder
         self.contentViewState = .noResults(title: noResultsTitle, suggestion: noResultsSuggestion)
         self.cityFinder = cityFinder
+        self.searchViewModel = .init(
+            text: searchText,
+            isLoading: isSearching,
+            placeholder: searchPlaceholder
+        )
+        
+        searchViewModel.searchCompletion = { [weak self] query in
+            guard let self else { return }
+            await self.onSearchData(with: query)
+        }
     }
     
     func viewDidLoad() async {
-        // TODO: Load a saved city if exists
-        $searchText
-            .dropFirst()
-            .removeDuplicates()
-            .handleEvents(receiveOutput: {  value in
-                Task { [weak self] in
-                    await self?.showSearchAnimation(!value.isEmpty)
-                }
-            })
-            .debounce(for: .seconds(3), scheduler: DispatchQueue.global())
-            .sink { [weak self] text in
-                self?.onSearchData(with: text)
-        }
-        .store(in: &subscriptions)
+        await searchViewModel.viewDidLoad()
     }
     
-    private func onSearchData(with cityName: String) {
-        Task {
-            await showSearchAnimation(!cityName.isEmpty)
-            guard !cityName.isEmpty else {                
-                return
+    private func onSearchData(with cityName: String) async {
+        do {
+            if let foundCity = try await cityFinder.searchCity(by: cityName) {
+                print(foundCity)
+                // TODO: Map the city
+            } else {
+                await displayQueryError(with: "City not found, use a different name")
             }
-            await enableSearch(false)
-            
-            do {
-                if let foundCity = try await cityFinder.searchCity(by: cityName) {
-                    print(foundCity)
-                    // TODO: Map the city
-                } else {
-                    await displayQueryError(with: "City not found, use a different name")
-                }
-            } catch {
-                print("Error retrieving city by name \(cityName) and error: \(error)")
-                await displayQueryError(with: "We could not find the city you searched for. Please try again.")
-            }
-            
-            await showSearchAnimation(false)
-            await enableSearch(true)
-        }
-    }
-    
-    private func showSearchAnimation(_ show: Bool) async {
-        await MainActor.run {
-            isSearching = show
-        }
-    }
-    
-    private func enableSearch(_ enabled: Bool) async {
-        await MainActor.run {
-            disableSearch = !enabled
+        } catch {
+            print("Error retrieving city by name \(cityName) and error: \(error)")
+            await displayQueryError(with: "We could not find the city you searched for. Please try again.")
         }
     }
     

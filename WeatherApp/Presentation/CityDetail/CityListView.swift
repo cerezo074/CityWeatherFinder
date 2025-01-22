@@ -49,13 +49,8 @@ struct CityDetailView: View {
     }
     
     private var searchView: some View {
-        SearchBar(
-            text: $viewModel.searchText,
-            isLoading: viewModel.isSearching,
-            disabled: viewModel.isSavingCity || viewModel.disableSearch,
-            placeholder: viewModel.searchPlaceholder
-        )
-        .padding(.top, Constants.searchPaddingTop)
+        SearchBar(viewModel: viewModel.searchViewModel)
+            .padding(.top, Constants.searchPaddingTop)
     }
     
     @ViewBuilder
@@ -87,7 +82,7 @@ struct CityDetailView: View {
     }
     
     // MARK: - Constants
-
+    
     private enum Constants {
         static let horizontalContentPadding: CGFloat = 24
         static let searchPlaceholder = "Search Location"

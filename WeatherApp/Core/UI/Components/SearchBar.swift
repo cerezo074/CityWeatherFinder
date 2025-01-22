@@ -8,30 +8,27 @@
 import SwiftUI
 
 struct SearchBar: View {
-    @Binding var text: String
-    let isLoading: Bool
-    let disabled: Bool
-    let placeholder: String
+    @ObservedObject var viewModel: SearchViewModel
 
     var body: some View {
         HStack {
-            TextField(placeholder, text: $text)
+            TextField(viewModel.placeholder, text: $viewModel.text)
                 .foregroundStyle(.darkGray)
                 .textFieldStyle(PlainTextFieldStyle())
                 .customFont(.regular, size: Constants.fontSize)
                 .padding(.leading, Constants.leadingInputPadding)
                 .padding(.vertical, Constants.verticalInputPadding)
-                .disabled(disabled)
+                .disabled(viewModel.disableSearch)
 
-            if showClearButton {
+            if viewModel.showClearButton {
                 Button(action: {
-                    text = ""
+                    viewModel.text = ""
                 }) {
                     Image(systemName: Constants.clearButtonImage)
                         .foregroundColor(.gray)
                 }
                 .padding(.trailing, Constants.trailingRightComponent)
-            } else if isLoading {
+            } else if viewModel.isLoading {
                 ProgressView()
                     .padding(.trailing, Constants.trailingRightComponent)
             } else {
@@ -41,10 +38,6 @@ struct SearchBar: View {
         }
         .background(.whiteSmoke)
         .cornerRadius(Constants.cornerRadius)
-    }
-    
-    private var showClearButton: Bool {
-        !text.isEmpty && !isLoading && !disabled
     }
     
     // MARK: - Constants
@@ -61,9 +54,10 @@ struct SearchBar: View {
 
 #Preview {
     SearchBar(
-        text: .constant(""),
-        isLoading: false,
-        disabled: false,
-        placeholder: "Search Location"
+        viewModel: .init(
+            text: "",
+            isLoading: false,
+            placeholder: "Search Location"
+        )
     )
 }
