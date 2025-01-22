@@ -54,6 +54,11 @@ class CityDetailViewModel: ObservableObject {
         await searchViewModel.viewDidLoad()
     }
     
+    func didTapSuggestedCity() async {
+        guard let suggestedCity = foundCity else { return }
+        await setState(.showSavedCity(.init(from: suggestedCity)))
+    }
+    
     private func onSearchData(with cityName: String) async {
         do {
             if let foundCity = try await cityFinder.searchCity(by: cityName) {
@@ -76,9 +81,9 @@ class CityDetailViewModel: ObservableObject {
     private func handleSuggestedCity(with foundCity: CityEntity) async {
         await setState(.showSuggestedCity(
             .init(
-                cityName: foundCity.cityName,
+                cityName: foundCity.name,
                 temperature: String(foundCity.temperature),
-                imageName: foundCity.imageURLPath
+                iconURL: foundCity.iconURL
             )
         ))
         

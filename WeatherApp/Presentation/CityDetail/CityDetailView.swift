@@ -65,7 +65,13 @@ struct CityDetailView: View {
         case .showSavedCity(let city):
             CityWeatherDetail(viewModel: city)
         case .showSuggestedCity(let city):
-            CitySuggestion(viewModel: city)
+            Button {
+                Task {
+                    await viewModel.didTapSuggestedCity()
+                }
+            } label: {
+                CitySuggestion(viewModel: city)
+            }
         }
     }
     

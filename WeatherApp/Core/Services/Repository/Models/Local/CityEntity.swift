@@ -8,15 +8,19 @@
 import Foundation
 
 struct CityEntity {
-    let cityName: String
+    let name: String
     let temperature: Double
     let humidityValue: Int
     let UVValue: Double
     let feelsLikeValue: Double
-    let imageURLPath: String
+    private let imageURLPath: String
+    
+    var iconURL: URL? {
+        return URL(string: "https:\(imageURLPath)")
+    }
     
     init(
-        cityName: String,
+        name: String,
         temperature: Double,
         humidityValue: Int,
         UVValue: Double,
@@ -24,7 +28,7 @@ struct CityEntity {
         imageURLPath: String
     ) {
         self.imageURLPath = imageURLPath
-        self.cityName = cityName
+        self.name = name
         self.temperature = temperature
         self.humidityValue = humidityValue
         self.UVValue = UVValue
@@ -33,7 +37,7 @@ struct CityEntity {
     
     init(from city: CityResource) {
         imageURLPath = city.current.condition.icon
-        cityName = city.location.name
+        name = city.location.name
         temperature = city.current.temp_c
         UVValue = city.current.uv
         humidityValue = city.current.humidity

@@ -10,11 +10,7 @@ import SwiftUI
 struct SuggestedCityViewModel {
     let cityName: String
     let temperature: String
-    let imageName: String
-    
-    var fullImageURL: URL? {
-        return URL(string: "https:\(imageName)")
-    }
+    let iconURL: URL?
 }
 
 struct CitySuggestion: View {
@@ -37,6 +33,7 @@ struct CitySuggestion: View {
         VStack(alignment: .leading, spacing: .zero) {
             Text(viewModel.cityName)
                 .customFont(.semiBold, size: Constants.titleFontSize)
+                .foregroundStyle(.darkGray)
                 .padding(.top, Constants.titleTopPadding)
             temperatureContainer
         }
@@ -46,6 +43,7 @@ struct CitySuggestion: View {
         HStack(alignment: .top, spacing: 0) {
             Text(viewModel.temperature)
                 .customFont(.medium, size: Constants.temperatureFontSize)
+                .foregroundStyle(.darkGray)
             Image(.ellipse)
                 .frame(width: Constants.dotSize, height: Constants.dotSize)
                 .padding(.top, Constants.dotTopPadding)
@@ -54,7 +52,9 @@ struct CitySuggestion: View {
     }
     
     private var weatherIcon: some View {
-        Image(systemName: viewModel.imageName)
+        // TODO: use iconURL and load the image
+//        Image(systemName: viewModel.iconURL)
+        Image(systemName: "sun.max.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: Constants.iconWidth, height: Constants.iconHeight)
@@ -81,7 +81,8 @@ struct CitySuggestion: View {
         viewModel: .init(
             cityName: "Mumbai",
             temperature: "20",
-            imageName: "sun.max.fill"
+            iconURL: URL(string: "https://cdn.weatherapi.com/weather/64x64/day/116.png")
         )
-    ).padding(.horizontal, 20)
+    )
+    .padding(.horizontal, 20)
 }

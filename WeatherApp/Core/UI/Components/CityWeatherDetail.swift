@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct CitySummaryViewModel {
-    let imageName: String
     let cityName: String
     let temperature: String
     let humidityTitle: String = "Humidity"
@@ -18,6 +17,32 @@ struct CitySummaryViewModel {
     let UVValue: String
     let feelsLikeTitle: String = "Feels like"
     let feelsLikeValue: String
+    let iconURL: URL?
+    
+    init(
+        iconURL: URL?,
+        cityName: String,
+        temperature: String,
+        humidityValue: String,
+        UVValue: String,
+        feelsLikeValue: String
+    ) {
+        self.iconURL = iconURL
+        self.cityName = cityName
+        self.temperature = temperature
+        self.humidityValue = humidityValue
+        self.UVValue = UVValue
+        self.feelsLikeValue = feelsLikeValue
+    }
+    
+    init(from city: CityEntity) {
+        cityName = city.name
+        temperature = String(city.temperature)
+        humidityValue = String(city.humidityValue)
+        iconURL = city.iconURL
+        UVValue = String(city.UVValue)
+        feelsLikeValue = String(city.feelsLikeValue)
+    }
 }
 
 struct CityWeatherDetail: View {
@@ -33,7 +58,8 @@ struct CityWeatherDetail: View {
     }
     
     private var weatherIcon: some View {
-        Image(systemName: viewModel.imageName)
+//        Image(systemName: viewModel.iconURL)
+        Image(systemName: "sun.max.fill")
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: Constants.iconSize, height: Constants.iconSize)
@@ -44,6 +70,7 @@ struct CityWeatherDetail: View {
         HStack(alignment: .center, spacing: Constants.cityContainerSpacing) {
             Text(viewModel.cityName)
                 .customFont(.medium, size: Constants.cityFontSize)
+                .foregroundStyle(.darkGray)
             Image(.vector)
                 .frame(width: Constants.vectorSize, height: Constants.vectorSize)
         }
@@ -53,6 +80,7 @@ struct CityWeatherDetail: View {
         HStack(alignment: .top, spacing: .zero) {
             Text(viewModel.temperature)
                 .customFont(.medium, size: Constants.temperatureFontSize)
+                .foregroundStyle(.darkGray)
                 .padding(.top, Constants.temperatureTopPadding)
             Image(.bigEllipse)
                 .frame(width: Constants.dotSize, height: Constants.dotSize)
@@ -134,7 +162,7 @@ struct CityWeatherDetail: View {
 #Preview {
     CityWeatherDetail(
         viewModel: .init(
-            imageName: "sun.max.fill",
+            iconURL: URL(string: "https://cdn.weatherapi.com/weather/64x64/day/116.png"),
             cityName: "Pune",
             temperature: "45",
             humidityValue: "20%",
