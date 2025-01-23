@@ -14,14 +14,11 @@ protocol CityDataInterface {
 
 class CityDataController: CityDataInterface {
     
-    private var savedCityEntity: CityEntity?
     private let repository: CityRepositoryInteface
     
     init(
-        savedCityEntity: CityEntity? = nil,
         repository: CityRepositoryInteface? = nil
     ) {
-        self.savedCityEntity = savedCityEntity
         self.repository = repository ?? CityRepository(
             networkProvider: NetworkController(),
             weatherAPIKey: Environment.staging.weatherApiKey,

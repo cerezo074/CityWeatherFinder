@@ -24,7 +24,6 @@ class CityDetailViewModel: ObservableObject {
     private(set) var isSavingCity: Bool = false
     private var foundCity: CityEntity?
     private var summaryViewModel: CitySummaryViewModel?
-    private var subscriptions = Set<AnyCancellable>()
     private let noResultsTitle: String = "No City Selected"
     private let noResultsSuggestion: String = "Please Search For A City"
     private let errorTitle: String = "Error"

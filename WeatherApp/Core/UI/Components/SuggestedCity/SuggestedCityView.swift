@@ -1,5 +1,5 @@
 //
-//  CitySuggestion.swift
+//  SuggestedCityView.swift
 //  WeatherApp
 //
 //  Created by Eli Pacheco Hoyos on 20/01/25.
@@ -8,13 +8,7 @@
 import SwiftUI
 import Kingfisher
 
-struct SuggestedCityViewModel {
-    let cityName: String
-    let temperature: String
-    let iconURL: URL?
-}
-
-struct CitySuggestion: View {
+struct SuggestedCityView: View {
     let viewModel: SuggestedCityViewModel
     
     var body: some View {
@@ -93,7 +87,7 @@ struct CitySuggestion: View {
 }
 
 #Preview {
-    CitySuggestion(
+    SuggestedCityView(
         viewModel: .init(
             cityName: "Mumbai",
             temperature: "20",

@@ -49,7 +49,7 @@ struct CityDetailView: View {
     }
     
     private var searchView: some View {
-        SearchBar(viewModel: viewModel.searchViewModel)
+        SearchBarView(viewModel: viewModel.searchViewModel)
             .padding(.top, Constants.searchPaddingTop)
     }
     
@@ -63,14 +63,14 @@ struct CityDetailView: View {
             showMessage(with: title, description: message)
                 .foregroundStyle(Constants.errorTextColor)
         case .showSavedCity(let city):
-            CityWeatherDetail(viewModel: city)
+            CitySummaryView(viewModel: city)
         case .showSuggestedCity(let city):
             Button {
                 Task {
                     await viewModel.didTapSuggestedCity()
                 }
             } label: {
-                CitySuggestion(viewModel: city)
+                SuggestedCityView(viewModel: city)
             }
         }
     }

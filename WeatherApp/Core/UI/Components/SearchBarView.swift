@@ -1,5 +1,5 @@
 //
-//  SearchBar.swift
+//  SearchBarView.swift
 //  WeatherApp
 //
 //  Created by Eli Pacheco Hoyos on 20/01/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchBar: View {
+struct SearchBarView: View {
     @ObservedObject var viewModel: SearchViewModel
 
     var body: some View {
@@ -60,7 +60,7 @@ struct SearchBar: View {
 }
 
 #Preview {
-    SearchBar(
+    SearchBarView(
         viewModel: .init(
             text: "",
             isLoading: false,

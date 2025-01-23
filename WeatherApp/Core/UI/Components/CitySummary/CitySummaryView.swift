@@ -1,5 +1,5 @@
 //
-//  CityWeatherDetail.swift
+//  CitySummaryView.swift
 //  WeatherApp
 //
 //  Created by Eli Pacheco Hoyos on 20/01/25.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Kingfisher
 
-struct CityWeatherDetail: View {
+struct CitySummaryView: View {
     @ObservedObject var viewModel: CitySummaryViewModel
     
     var body: some View {
@@ -173,7 +173,7 @@ struct CityWeatherDetail: View {
 }
 
 #Preview {
-    CityWeatherDetail(
+    CitySummaryView(
         viewModel: .init(
             iconURL: URL(string: "https://cdn.weatherapi.com/weather/64x64/day/116.png"),
             cityName: "Pune",
