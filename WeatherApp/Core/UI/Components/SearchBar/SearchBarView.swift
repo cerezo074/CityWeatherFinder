@@ -1,8 +1,8 @@
 //
 //  SearchBarView.swift
-//  WeatherApp
+//  StockFinder
 //
-//  Created by Eli Pacheco Hoyos on 20/01/25.
+//  Created by Eli Pacheco Hoyos on 22/01/25.
 //
 
 import SwiftUI
@@ -37,7 +37,7 @@ struct SearchBarView: View {
             Image(.search)
         case .waitingForInteraction where viewModel.allowClearText:
             Button(action: {
-                viewModel.text = ""
+                viewModel.clearText()
             }) {
                 Image(systemName: Constants.clearButtonImage)
                     .foregroundColor(.gray)

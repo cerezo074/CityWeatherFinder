@@ -1,8 +1,8 @@
 //
 //  SearchViewModel.swift
-//  WeatherApp
+//  StockFinder
 //
-//  Created by Eli Pacheco Hoyos on 21/01/25.
+//  Created by Eli Pacheco Hoyos on 22/01/25.
 //
 
 import Foundation
@@ -22,7 +22,9 @@ class SearchViewModel: ObservableObject {
     private(set) var viewState: ViewState
     
     private var subscriptions = Set<AnyCancellable>()
+    private var onFirstFocuse: Bool = false
     var searchCompletion: AsyncQueryClousure?
+    var cleanCompletion: AsyncVoidClousure?
     let placeholder: String
 
     var allowClearText: Bool {
@@ -50,30 +52,44 @@ class SearchViewModel: ObservableObject {
             .dropFirst()
             .removeDuplicates()
             .handleEvents(receiveOutput: { [weak self] value in
-                self?.prepareToSearch(with: value)
+                self?.prepareLoader(for: value)
             })
-            .debounce(for: .seconds(3), scheduler: DispatchQueue.global())
+            .debounce(for: .seconds(2), scheduler: DispatchQueue.global())
             .sink { [weak self] text in
                 self?.onSearchData(with: text)
-        }
-        .store(in: &subscriptions)
+            }
+            .store(in: &subscriptions)
     }
     
-    private func onSearchData(with cityName: String) {
+    func clearText(showLoader: Bool = true) {
         Task {
-            guard !cityName.isEmpty else {
-                await setState(.waitingForInteraction)
-                return
-            }
-            await setState(.searching)
-            await searchCompletion?(cityName)
+            await MainActor.run { text = "" }
+            await setState(.readyToSearch)
+            await cleanCompletion?()
             await setState(.waitingForInteraction)
         }
     }
     
-    private func prepareToSearch(with text: String) {
+    private func onSearchData(with query: String) {
         Task {
-            await setState(text.isEmpty ? .waitingForInteraction : .readyToSearch)
+            guard !query.isEmpty else {
+                await cleanCompletion?()
+                await setState(.waitingForInteraction)
+                return
+            }
+            await setState(.searching)
+            await searchCompletion?(query)
+            await setState(.waitingForInteraction)
+        }
+    }
+    
+    private func prepareLoader(for value: String) {
+        Task {
+            if !self.onFirstFocuse && value.isEmpty {
+                self.onFirstFocuse = true
+            } else {
+                await setState(.readyToSearch)
+            }
         }
     }
     
