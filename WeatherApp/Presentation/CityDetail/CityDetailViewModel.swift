@@ -10,7 +10,7 @@ import Combine
 
 class CityDetailViewModel: ObservableObject {
     
-    enum ContentViewState {
+    enum ContentViewState: Hashable {
         case noResults(title: String, suggestion: String)
         case showSavedCity(_ savedCity: CitySummaryViewModel)
         case showSuggestedCity(_ suggestedCity: SuggestedCityViewModel)

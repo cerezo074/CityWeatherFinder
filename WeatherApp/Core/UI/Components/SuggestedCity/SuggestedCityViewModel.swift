@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SuggestedCityViewModel {
+struct SuggestedCityViewModel: Hashable {
     let cityName: String
     let temperature: String
     let iconURL: URL?

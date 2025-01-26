@@ -9,7 +9,7 @@ import Foundation
 
 class CitySummaryViewModel: ObservableObject {
     
-    enum SavingState: Equatable {
+    enum SavingState: Hashable {
         case saving(message: String)
         case saved
         case error(message: String)
@@ -78,5 +78,29 @@ class CitySummaryViewModel: ObservableObject {
         await MainActor.run {
             self.saveState = state
         }
+    }
+}
+
+extension CitySummaryViewModel: Hashable {
+    static func == (lhs: CitySummaryViewModel, rhs: CitySummaryViewModel) -> Bool {
+        return lhs.cityName == rhs.cityName &&
+        lhs.temperature == rhs.temperature &&
+        lhs.humidityValue == rhs.humidityValue &&
+        lhs.iconURL == rhs.iconURL &&
+        lhs.humidityValue == rhs.humidityValue &&
+        lhs.feelsLikeValue == rhs.feelsLikeValue &&
+        lhs.UVValue == rhs.UVValue &&
+        lhs.saveState == rhs.saveState
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(cityName)
+        hasher.combine(temperature)
+        hasher.combine(humidityValue)
+        hasher.combine(iconURL)
+        hasher.combine(humidityValue)
+        hasher.combine(feelsLikeValue)
+        hasher.combine(UVValue)
+        hasher.combine(saveState)
     }
 }

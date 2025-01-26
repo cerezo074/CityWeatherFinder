@@ -32,6 +32,8 @@ struct CityDetailView: View {
             Spacer()
         }
         .padding(.horizontal, Constants.horizontalContentPadding)
+        .transition(.scale)
+        .animation(.easeInOut.speed(2), value: viewModel.contentViewState)
         .task {
             await viewModel.viewDidLoad()
         }
