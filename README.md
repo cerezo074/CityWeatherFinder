@@ -43,7 +43,10 @@ The app leverages modern iOS development technologies, including:
 ### Installation
 1. Clone the repository and open it in Xcode:
 2. **Set up the Weather API Key**:
-- Go to **Product** → **Scheme** → **Edit Scheme**.
+- To obtain a free API key from [WeatherAPI.com](https://www.weatherapi.com), follow these steps:
+	1.	Sign Up: Visit WeatherAPI.com and click on the “Signup” option. Complete the registration process by providing the required information.
+	2.	Access Your API Key: After signing up, log in to your account. Navigate to the account dashboard, where your unique API key will be displayed.
+- In your Xcode, go to **Product** → **Scheme** → **Edit Scheme**.
 - Under the **Run** section, select the **Arguments** tab.
 - Add a new **Environment Variable** with the key: `WEATHER_API_KEY` and set your API key as the value.
 
